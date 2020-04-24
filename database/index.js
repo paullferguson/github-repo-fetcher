@@ -3,7 +3,7 @@ mongoose.connect('mongodb://localhost/fetcher');
 
 let repoSchema = mongoose.Schema(
   {
-    _id: Number,
+    repo_id: Number,
     name: String,
     full_name: String,
     owner: {
@@ -14,8 +14,8 @@ let repoSchema = mongoose.Schema(
     html_url: String,
     description: String,
     url: String,
-    created_at: Date,
-    updated_at: Date,
+    created_at: String,
+    updated_at: String,
     git_url: String,
     ssh_url: String,
     clone_url: String,
