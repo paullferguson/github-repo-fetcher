@@ -12,11 +12,10 @@ app.post('/repos', function (req, resp) {
   // and get the repo information from the github API, then
   // save the repo information in the database
   console.log('Query: ', req.body.username);
+  helper.getReposByUsername(req.body.username);
 
   // Not sure if this is premature but don't want to leave the browser hanging
   resp.sendStatus(200);
-
-  helper.getReposByUsername(req.body.username);
 
 });
 

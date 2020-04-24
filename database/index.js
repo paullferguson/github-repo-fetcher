@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/fetcher');
+mongoose.connect('mongodb://localhost/fetcher',{
+  useMongoClient: true
+});
 
-let repoSchema = mongoose.Schema(
-  {
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', () => {console.log('Mongoose connected')});
+
+let repoSchema = mongoose.Schema({
     repo_id: Number,
     name: String,
     full_name: String,
@@ -25,12 +29,14 @@ let repoSchema = mongoose.Schema(
     watchers_count: Number,
     forks_count: Number,
     open_issues_count: Number
-  }
-);
+});
 
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (/* TODO */) => {
+let save = (dataArr) => {
+  dataArr.forEach((repo) => {
+    console.log('title >> ', repo.full_name);
+  });
   // TODO: Your code here
   // This function should save a repo or repos to
   // the MongoDB
