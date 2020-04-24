@@ -1,7 +1,9 @@
 const express = require('express');
+var parser = require('body-parser');
 let app = express();
 
 app.use(express.static(__dirname + '/../client/dist'));
+app.use(parser.json());
 
 app.post('/repos', function (req, res) {
   // TODO - your code here!
