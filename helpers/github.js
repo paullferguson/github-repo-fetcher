@@ -1,8 +1,9 @@
 const request = require('request');
+const promise = require('bluebird');
 const config = require('../config.js');
 const mongoose = require('../database');
 
-let getReposByUsername = (username) => {
+let getReposByUsername = (username, cb) => {
 
   let options = {
     url: `https://api.github.com/search/repositories?q=user:${username}`,
@@ -17,13 +18,14 @@ let getReposByUsername = (username) => {
   request(options, function (err, resp, body) {
     if (err) {
       console.log('Git request error' , err);
+      cb(err);
     } else {
 
       body = JSON.parse(body);
       body.items.forEach((repo) => {
         console.log('Saving to Mongo < ', repo.full_name);
 
-        mongoose.Repo.findOne({repo_id: repo.id}, function(err, checkRepo){
+        let promise = mongoose.Repo.findOne({repo_id: repo.id}, function(err, checkRepo){
           if(err) console.log(err);
           if (checkRepo) {
             console.log('This repo has already been saved');
@@ -51,6 +53,9 @@ let getReposByUsername = (username) => {
             });
           }
         });
+        promise.then(function () {
+          cb(null);
+        })
       });
     }
   });

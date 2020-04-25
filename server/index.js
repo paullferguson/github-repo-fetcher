@@ -1,4 +1,5 @@
 const express = require('express');
+const Promise = require('bluebird');
 const helper = require('../helpers/github');
 const mongoose = require('../database');
 const app = express();
@@ -11,17 +12,26 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.post('/api/repos', function (req, resp) {
-  helper.getReposByUsername(req.body.username);
-  resp.sendStatus(200);
+  helper.getReposByUsername(req.body.username, (err)=>{
+    if (err){
+      throw err;
+    } else {
+      mongoose.Repo.find({}).limit(25).sort({size:-1})
+        .then((repos) => {
+          resp.send(repos);
+        })
+        .catch(err => resp.status(500).send(err));
+    }
+  });
 });
 
 
 app.get('/api/repos', function (req, resp) {
-  mongoose.Repo.find({}).limit(25).sort({size:1})
+  mongoose.Repo.find({}).limit(25).sort({size:-1})
     .then((repos) => {
       resp.send(repos);
     })
-    .catch(err => resp.send(err).sendStatus(500));
+    .catch(err => resp.status(500).send(err));
 });
 
 app.get('/api/repos/:orderBy', function (req, resp) {
@@ -30,8 +40,8 @@ app.get('/api/repos/:orderBy', function (req, resp) {
     .then((repos) => {
       resp.send(repos);
     })
-    .catch(err => resp.send(err).sendStatus(500));
-});
+    .catch(err => resp.status(500).send(err));
+  });
 
 
 // Kick it off

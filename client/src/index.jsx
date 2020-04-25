@@ -25,10 +25,9 @@ class App extends React.Component {
       context: this
     })
     .done(function(repos) {
-      console.log( "Get all success", repos );
-      this.setState((prev) => ({
+      this.setState({
         repos
-      }));
+      });
     })
     .fail(function(err) {
       console.log( "Get all error", err );
@@ -42,29 +41,28 @@ class App extends React.Component {
       $.ajax({
         url: '/api/repos',
         method: 'POST',
-        data: { username: term }
+        data: { username: term },
+        context: this
       })
-      .done(function(msg) {
-        console.log( "Post success", msg );
-      })
-      .fail(function(msg) {
-        console.log( "Post error", msg );
+      .done(function(repos) {
+        this.setState({
+          repos
+        });
+        })
+      .fail(function(err) {
+        console.log( "Post error", err );
       });
     }
   }
 
 
   handleClickOrderBy(orderBy) {
-
-    console.log('orderBy', orderBy);
-
     $.ajax({
       url: `/api/repos/${orderBy}`,
       method: 'GET',
       context: this
     })
     .done((repos) => {
-      console.log( `Get by ${orderBy} success`, repos );
       this.setState((prev) => ({
         repos,
         orderBy
