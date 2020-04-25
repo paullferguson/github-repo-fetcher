@@ -22,13 +22,16 @@ let getReposByUsername = (username, cb) => {
     } else {
 
       body = JSON.parse(body);
+      let counter = 0;
+
       body.items.forEach((repo) => {
         console.log('Saving to Mongo < ', repo.full_name);
 
-        let promise = mongoose.Repo.findOne({repo_id: repo.id}, function(err, checkRepo){
+        mongoose.Repo.findOne({repo_id: repo.id}, function(err, checkRepo){
           if(err) console.log(err);
           if (checkRepo) {
             console.log('This repo has already been saved');
+            counter++;
           } else {
 
             mongoose.Repo.create({
@@ -50,12 +53,14 @@ let getReposByUsername = (username, cb) => {
               watchers_count: repo.watchers_count,
               forks_count: repo.forks_count,
               open_issues_count: repo.open_issues_count
+            }, () => {
+              counter++;
+              if (counter === body.items.length) {
+                cb();
+              }
             });
           }
         });
-        promise.then(function () {
-          cb(null);
-        })
       });
     }
   });
