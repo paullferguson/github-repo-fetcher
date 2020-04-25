@@ -15,29 +15,48 @@ class App extends React.Component {
 
   }
 
-  search (term) {
-    console.log(`${term} was searched`);
+  componentDidMount() {
 
-    // POST the username search
     $.ajax({
       url: '/repos',
-      method: 'POST',
-      data: { username: term }
+      method: 'GET',
+      context: this
     })
-    .done(function(msg) {
-      console.log( "Ajax success", msg );
+    .done(function(repos) {
+      console.log( "Get all success", repos );
+      this.setState((prev) => ({
+        repos
+      }));
     })
-    .fail(function(msg) {
-      console.log( "Ajax error", msg );
+    .fail(function(err) {
+      console.log( "Get all error", err );
     });
+
+  }
+
+  search (term) {
+    if (term) {
+      // POST the username search
+      $.ajax({
+        url: '/repos',
+        method: 'POST',
+        data: { username: term }
+      })
+      .done(function(msg) {
+        console.log( "Post success", msg );
+      })
+      .fail(function(msg) {
+        console.log( "Post error", msg );
+      });
+    }
   }
 
   render () {
     return (
     <main>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
       <Search onSearch={this.search}/>
+      <RepoList repos={this.state.repos}/>
     </main>)
   }
 }
