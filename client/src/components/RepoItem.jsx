@@ -20,7 +20,7 @@ class RepoItem extends React.Component {
                 <small>Created {created_at}</small>
               </div>
             </div>
-            <p>{description}</p>
+            {/* <p>{description}</p> */}
             <ul className="repo-item__details">
               <li>size: <strong>{size}</strong></li>
               <li>stars: <strong>{stargazers_count}</strong></li>

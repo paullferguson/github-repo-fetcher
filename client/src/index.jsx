@@ -8,17 +8,19 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      repos: []
+      repos: [],
+      orderBy: 'size',
     }
 
-    this.search = this.search.bind(this)
+    this.search = this.search.bind(this);
+    this.handleClickOrderBy = this.handleClickOrderBy.bind(this);
 
   }
 
   componentDidMount() {
 
     $.ajax({
-      url: '/repos',
+      url: '/api/repos',
       method: 'GET',
       context: this
     })
@@ -38,7 +40,7 @@ class App extends React.Component {
     if (term) {
       // POST the username search
       $.ajax({
-        url: '/repos',
+        url: '/api/repos',
         method: 'POST',
         data: { username: term }
       })
@@ -51,12 +53,34 @@ class App extends React.Component {
     }
   }
 
+
+  handleClickOrderBy(orderBy) {
+
+    console.log('orderBy', orderBy);
+
+    $.ajax({
+      url: `/api/repos/${orderBy}`,
+      method: 'GET',
+      context: this
+    })
+    .done((repos) => {
+      console.log( `Get by ${orderBy} success`, repos );
+      this.setState((prev) => ({
+        repos,
+        orderBy
+      }));
+    })
+    .fail((err) => {
+      console.log( `Get by ${orderBy} error`, err );
+    });
+  }
+
   render () {
     return (
     <main>
       <h1>Github Fetcher</h1>
       <Search onSearch={this.search}/>
-      <RepoList repos={this.state.repos}/>
+      <RepoList repos={this.state.repos} orderBy={this.state.orderBy} onOrderBy={this.handleClickOrderBy}/>
     </main>)
   }
 }
