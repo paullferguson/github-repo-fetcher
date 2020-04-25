@@ -3,8 +3,6 @@ const config = require('../config.js');
 const db = require('../database');
 
 let getReposByUsername = (username) => {
-  // TODO - Use the request module to request repos for a specific
-  // user from the github API
 
   let options = {
     url: `https://api.github.com/search/repositories?q=user:${username}`,

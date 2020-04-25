@@ -20,10 +20,6 @@ let repoSchema = mongoose.Schema({
     url: String,
     created_at: String,
     updated_at: String,
-    git_url: String,
-    ssh_url: String,
-    clone_url: String,
-    svn_url: String,
     size: Number,
     stargazers_count: Number,
     watchers_count: Number,
@@ -33,13 +29,35 @@ let repoSchema = mongoose.Schema({
 
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (dataArr) => {
+let save = (dataArr, callback) => {
   dataArr.forEach((repo) => {
-    console.log('title >> ', repo.full_name);
+    console.log('Saving to Mongo < ', repo.full_name);
+
+    Repo.create({
+      repo_id: repo.id,
+      name: repo.name,
+      full_name: repo.full_name,
+      owner: {
+        login: repo.owner.login,
+        avatar_url: repo.owner.avatar_url,
+        html_url: repo.owner.html_url
+      },
+      html_url: repo.html_url,
+      description: repo.description,
+      url: repo.url,
+      created_at: repo.created_at,
+      updated_at: repo.updated_at,
+      size: repo.size,
+      stargazers_count: repo.stargazers_count,
+      watchers_count: repo.watchers_count,
+      forks_count: repo.forks_count,
+      open_issues_count: repo.open_issues_count
+
+    }, function (err, repo) {
+      if (err) return handleError(err);
+    });
   });
-  // TODO: Your code here
-  // This function should save a repo or repos to
-  // the MongoDB
 }
 
 module.exports.save = save;
+module.exports.Repo = Repo;
