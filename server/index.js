@@ -1,7 +1,7 @@
 const express = require('express');
 const helper = require('../helpers/github');
-const db = require('../database');
-let app = express();
+const mongoose = require('../database');
+const app = express();
 
 app.use(express.static(__dirname + '/../client/dist'));
 app.use(express.json());
@@ -16,9 +16,11 @@ app.post('/repos', function (req, resp) {
 
 
 app.get('/repos', function (req, resp) {
-  db.Repo.find({}, (err, data) => {
-    resp.send(data);
-  }).limit(25).sort({size:1});
+  mongoose.Repo.find({}).limit(25).sort({size:1})
+    .then((repos) => {
+      resp.send(repos);
+    })
+    .catch(err => resp.send(err).sendStatus(500));
 });
 
 
