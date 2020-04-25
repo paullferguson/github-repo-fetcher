@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
+import axios from 'axios';
+
 import Search from './components/Search.jsx';
 import RepoList from './components/RepoList.jsx';
 
@@ -15,79 +16,54 @@ class App extends React.Component {
     this.search = this.search.bind(this);
     this.clear = this.clear.bind(this);
     this.handleClickOrderBy = this.handleClickOrderBy.bind(this);
-
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/api/repos',
-      method: 'GET',
-      context: this
-    })
-    .done(function(repos) {
-      this.setState({
-        repos
+    axios.get('/api/repos')
+      .then((repos) => {
+        this.setState({ repos: repos.data });
+      })
+      .catch((err) => {
+        console.log( "Get all error", err );
       });
-    })
-    .fail(function(err) {
-      console.log( "Get all error", err );
-    });
   }
 
 
-  search (term) {
+  search(term) {
     if (term) {
-      // POST the username search
-      $.ajax({
-        url: '/api/repos',
-        method: 'POST',
-        data: { username: term },
-        context: this
-      })
-      .done(function(repos) {
-        this.setState({
-          repos
-        });
+      axios.post('/api/repos', { username: term })
+        .then((repos) => {
+          this.setState({ repos: repos.data });
         })
-      .fail(function(err) {
-        console.log( "Post error", err );
-      });
+        .catch((err) => {
+          console.log( "Post error", err );
+        });
     }
   }
 
 
-  clear () {
-    $.ajax({
-      url: '/api/clear',
-      method: 'POST',
-      context: this
-    })
-    .done(function(repos) {
-      this.setState({
-        repos
-      });
+  clear() {
+    axios.post('/api/clear')
+      .then((repos) => {
+        this.setState({ repos: repos.data });
       })
-    .fail(function(err) {
-      console.log( "Post error", err );
-    });
+      .catch((err) => {
+        console.log( "Clear Repos error", err );
+      });
   }
 
 
   handleClickOrderBy(orderBy) {
-    $.ajax({
-      url: `/api/repos/${orderBy}`,
-      method: 'GET',
-      context: this
-    })
-    .done((repos) => {
-      this.setState((prev) => ({
-        repos,
-        orderBy
-      }));
-    })
-    .fail((err) => {
-      console.log( `Get by ${orderBy} error`, err );
-    });
+    axios(`/api/repos/${orderBy}`)
+      .then((repos) => {
+        this.setState({
+          repos: repos.data,
+          orderBy
+        });
+      })
+      .catch((err) => {
+        console.log( `Get by ${orderBy} error`, err );
+      });
   }
 
   render () {
