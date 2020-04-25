@@ -41,8 +41,15 @@ app.get('/api/repos/:orderBy', function (req, resp) {
       resp.send(repos);
     })
     .catch(err => resp.status(500).send(err));
-  });
+});
 
+app.post('/api/clear', function (req, resp) {
+  mongoose.Repo.deleteMany({})
+    .then(() => {
+      resp.send([]);
+    })
+    .catch(err => resp.status(500).send(err));
+});
 
 // Kick it off
 app.listen(port, function() {

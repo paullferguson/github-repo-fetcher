@@ -13,12 +13,12 @@ class App extends React.Component {
     }
 
     this.search = this.search.bind(this);
+    this.clear = this.clear.bind(this);
     this.handleClickOrderBy = this.handleClickOrderBy.bind(this);
 
   }
 
   componentDidMount() {
-
     $.ajax({
       url: '/api/repos',
       method: 'GET',
@@ -32,8 +32,8 @@ class App extends React.Component {
     .fail(function(err) {
       console.log( "Get all error", err );
     });
-
   }
+
 
   search (term) {
     if (term) {
@@ -53,6 +53,23 @@ class App extends React.Component {
         console.log( "Post error", err );
       });
     }
+  }
+
+
+  clear () {
+    $.ajax({
+      url: '/api/clear',
+      method: 'POST',
+      context: this
+    })
+    .done(function(repos) {
+      this.setState({
+        repos
+      });
+      })
+    .fail(function(err) {
+      console.log( "Post error", err );
+    });
   }
 
 
@@ -77,7 +94,7 @@ class App extends React.Component {
     return (
     <main>
       <h1>Github Fetcher</h1>
-      <Search onSearch={this.search}/>
+      <Search onSearch={this.search} onClear={this.clear}/>
       <RepoList repos={this.state.repos} orderBy={this.state.orderBy} onOrderBy={this.handleClickOrderBy}/>
     </main>)
   }
