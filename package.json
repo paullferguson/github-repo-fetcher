@@ -1,13 +1,15 @@
 {
-  "name": "github-fetcher-fullstack-v2",
+  "name": "github-repo-fetcher",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "react-dev": "webpack -d --watch",
-    "server-dev": "nodemon server/index.js"
+    "react-prod": "webpack",
+    "server-dev": "nodemon server/index.js",
+    "server-prod": "node server/index.js"
   },
-  "author": "Beth Johnson",
+  "author": "Paul Ferguson",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.23.1",

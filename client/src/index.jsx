@@ -69,7 +69,7 @@ class App extends React.Component {
   render () {
     return (
     <main>
-      <h1>Github Fetcher</h1>
+      <h1>Github Repo Fetcher</h1>
       <Search onSearch={this.search} onClear={this.clear}/>
       <RepoList repos={this.state.repos} orderBy={this.state.orderBy} onOrderBy={this.handleClickOrderBy}/>
     </main>)
