@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/fetcher',{
-  useMongoClient: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
